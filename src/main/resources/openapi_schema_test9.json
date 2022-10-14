@@ -1,0 +1,96 @@
+{
+  "title": "Composition",
+  "description": "A COMPOSITION",
+  "type": "object",
+  "required": [
+    "id",
+    "name"
+  ],
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "name": {
+      "$ref": "#/components/schemas/ADvText"
+    }
+  },
+  "components": {
+    "schemas": {
+      "ADvText": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/DvText"
+          },
+          {
+            "$ref": "#/components/schemas/DvCodedText"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "_type",
+          "mapping": {
+            "DV_TEXT": "#/components/schemas/DvText",
+            "DV_CODED_TEXT": "#/components/schemas/DvCodedText"
+          }
+        }
+      },
+      "DvText": {
+        "title": "DvText",
+        "description": "A DV_TEXT object",
+        "x-discriminator-value": "DV_TEXT",
+        "type": "object",
+        "x-allOf": [
+          {
+            "$ref": "#/components/schemas/ADvText"
+          }
+        ],
+        "required": [
+          "_type",
+          "value"
+        ],
+        "properties": {
+          "_type": {
+            "type": "string",
+            "enum": [
+              "DV_TEXT",
+              "DV_CODED_TEXT"
+            ]
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "discriminator": {
+          "propertyName": "_type"
+        },
+        "example": {
+          "_type": "DV_TEXT",
+          "value": "text"
+        }
+      },
+      "DvCodedText": {
+        "title": "DvCodedText",
+        "description": "A DV_CODED_TEXT object",
+        "x-discriminator-value": "DV_CODED_TEXT",
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/DvText"
+          }
+        ],
+        "required": [
+          "code_string"
+        ],
+        "properties": {
+          "code_string": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "_type": "DV_CODED_TEXT",
+          "value": "coded TEXT",
+          "code_string": "at0001"
+        }
+      }
+    }
+  }
+}
