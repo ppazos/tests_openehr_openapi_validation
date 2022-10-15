@@ -1,0 +1,111 @@
+type: object
+allOf:
+  - $ref: '#/components/schemas/Composition'
+openapi: 3.0.3
+#info:
+#  title: openEHR
+#  version: '1.0'
+#  description: test
+#  contact:
+#    name: test
+#    url: http://wwww.example.com
+#    email: info@example.com
+#  license:
+#    name: Apache 2.0
+#    url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
+#servers:
+#  - url: 'http://localhost:8000/mock'
+#paths:
+#  /composition:
+#    get:
+#      summary: get
+#      description: Test get COMPOSITION
+#      operationId: get-composition
+#      responses:
+#        '200':
+#          description: OK
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/Composition'
+#        '400':
+#          description: Bad request
+#    post:
+#      summary: create
+#      description: Test create COMPOSITION
+#      operationId: post-composition
+#      requestBody:
+#        content:
+#          application/json:
+#            schema:
+#              $ref: '#/components/schemas/Composition'
+#        description: new COMPOSITION
+#      responses:
+#        '201':
+#          description: OK
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/Composition'
+#        '400':
+#          description: Bad request
+components:
+  schemas:
+    Composition:
+      title: COMPOSITION
+      description: A COMPOSITION
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+        name:
+          $ref: '#/components/schemas/ADvText'
+    ADvText:
+      oneOf:
+        - $ref: '#/components/schemas/DvText'
+        - $ref: '#/components/schemas/DvCodedText'
+      properties:
+        _type:
+          type: string
+      required:
+        - _type
+      discriminator:
+        propertyName: _type
+        mapping:
+          DV_TEXT: '#/components/schemas/DvText'
+          DV_CODED_TEXT: '#/components/schemas/DvCodedText'
+    DvText:
+      title: DV_TEXT
+      description: A DV_TEXT object
+#      allOf:
+#        - $ref: '#/components/schemas/ADvText'
+      type: object
+      required:
+        - _type
+        - value
+      properties:
+#        _type:
+#          type: string
+        value:
+          type: string
+      example:
+        _type: DV_TEXT
+        value: text
+    DvCodedText:
+      title: DV_CODED_TEXT
+      description: A DV_CODED_TEXT object
+      allOf:
+        - $ref: '#/components/schemas/DvText'
+      required:
+        - code_string
+      properties:
+        code_string:
+          type: string
+      example:
+        _type: DV_CODED_TEXT
+        value: coded TEXT
+        code_string: at0001
+
