@@ -21,38 +21,41 @@ class App {
       "composition_test9_empty.json",
       "composition_test9_no_id.json",
       "composition_test9_no_value.json",
+      "composition_test9_no_code_string.json",
       "composition_test9.json"
     ]
 
     // https://fasterxml.github.io/jackson-databind/javadoc/2.7/com/fasterxml/jackson/databind/ObjectMapper.html
-    JsonNode schemaNode = TreeUtil.json.readTree(this.getClass().getClassLoader().getResource("openapi_schema_test9.json"))
+    JsonNode schemaNode = TreeUtil.yaml.readTree(this.getClass().getClassLoader().getResource("openapi_schema_test10.yaml"))
 
     SchemaValidator schemaValidator = new SchemaValidator(null, schemaNode)
 
     compos.each { compo ->
-    
-      println "testing ${compo}"
-      println ""
+      try {
+        println "testing ${compo}"
+        println ""
 
-      JsonNode contentNode = TreeUtil.json.readTree(this.getClass().getClassLoader().getResource(compo))
+        JsonNode contentNode = TreeUtil.json.readTree(this.getClass().getClassLoader().getResource(compo))
 
-      // Validation with exception
-      try
-      {
-        schemaValidator.validate(contentNode)
-      }
-      catch(ValidationException ex)
-      {
-        println ex.results()
-      }
+        // Validation with exception
+        try {
+          schemaValidator.validate(contentNode)
+        }
+        catch (ValidationException ex) {
+          println ex.results()
+        }
 
-      // or validation without exception
-      ValidationData<Void> validation = new ValidationData<>()
-      schemaValidator.validate(contentNode, validation)
-      
-      if (!validation.isValid())
-      {
-        println validation.results()
+        // or validation without exception
+        ValidationData<Void> validation = new ValidationData<>()
+        schemaValidator.validate(contentNode, validation)
+
+        if (!validation.isValid()) {
+          println validation.results()
+        } else {
+          println "file valid"
+        }
+      } catch (Throwable e) {
+        e.printStackTrace()
       }
     }
   }
